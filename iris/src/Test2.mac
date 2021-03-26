@@ -1,0 +1,12 @@
+ROUTINE Test2
+
+Begin(From)[]Public
+{
+    write "this is called from ",From,!
+    do next
+}
+
+next()[]
+{
+    write "called from the next hop",!
+}

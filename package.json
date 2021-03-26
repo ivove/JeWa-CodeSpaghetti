@@ -1,0 +1,10 @@
+{
+    "name": "jewa-code-spaghetti",
+    "author": "Ivo Ver Eecke",
+    "licence": "MIT",
+    "version": "1.0.0",
+    "private": false,
+    "scripts": {
+        "iris-compile": "docker exec -i jewa iris session IRIS < iris-compile-src.script"
+    }
+}

@@ -1,0 +1,13 @@
+ROUTINE Test1
+
+Begin()[] Public
+{
+    write "The begining",!
+    do next
+    do Begin^Test2("Test1")
+}
+
+next()[]
+{
+    write "Next Line",!
+}
