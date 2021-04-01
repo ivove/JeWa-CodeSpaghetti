@@ -1,13 +1,15 @@
 ROUTINE Test1
-
+ //comment1
+ ;comment2
+#;comment3
 Begin()[] Public
 {
-    write "The begining",!
-    do next
-    do Begin^Test2("Test1")
+    Write "The begining",! ;writing some text
+    Do next
+    Do Begin^Test2("Test1")
 }
 
 next()[]
 {
-    write "Next Line",!
+    Write "Next Line",!
 }
