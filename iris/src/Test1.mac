@@ -4,6 +4,9 @@ ROUTINE Test1
 #;comment3
 Begin()[] Public
 {
+    /* some
+    multiline
+    comment*/
     Write "The begining",! ;writing some text
     Do next
     Do Begin^Test2("Test1")

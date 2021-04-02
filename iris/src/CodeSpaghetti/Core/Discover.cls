@@ -3,7 +3,7 @@ Class CodeSpaghetti.Core.Discover Extends %RegisteredObject
 {
 
 /// Discover all routines in this namespace, or a subset using the filter parameter
-ClassMethod DiscoverRoutines(filter As %String = "") As %ListOfObjects
+ClassMethod DiscoverRoutines(filter As %String = "") As %Status
 {
     If (filter = "") { Set filter = "*.MAC" }
     Set namespace = $ZNSPACE
@@ -16,6 +16,7 @@ ClassMethod DiscoverRoutines(filter As %String = "") As %ListOfObjects
         Do codeFile.%Save(0)
     }
     Do resultset.%Close()
+    Return $$$OK
 }
 
 }
