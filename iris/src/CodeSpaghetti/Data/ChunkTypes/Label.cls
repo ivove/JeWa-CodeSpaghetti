@@ -9,7 +9,10 @@ Property IsPublic As %Boolean;
 Property Parameters As list Of %String;
 
 /// The public variables for this label
-Property PublicVaraibles As list Of %String;
+Property PublicVariables As list Of %String;
+
+/// The name of the label
+Property Name As %String;
 
 Storage Default
 {
@@ -23,6 +26,12 @@ Storage Default
 </Value>
 <Value name="3">
 <Value>PublicVaraibles</Value>
+</Value>
+<Value name="4">
+<Value>Name</Value>
+</Value>
+<Value name="5">
+<Value>PublicVariables</Value>
 </Value>
 </Data>
 <DefaultData>LabelDefaultData</DefaultData>

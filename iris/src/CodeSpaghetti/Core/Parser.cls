@@ -23,6 +23,50 @@ ClassMethod Parse(file As CodeSpaghetti.Data.CodeFile) As %Status
     Return sc
 }
 
+/// Pares one line
+ClassMethod ParseLine(line As %String, lineNumber As %Integer) As %ListOfObjects
+{
+    Set result = ##class(%ListOfObjects).%New()
+    Set testLine = $ZSTRIP(line,"<W") //strip whitespace in front of the first character
+    If line = testLine {
+        //this is a label
+
+    }
+    Return result
+}
+
+ClassMethod ParseLabel(line As %String, lineNumber As %Integer, parent As CodeSpaghetti.Data.CodeChunk = "") As CodeSpaghetti.Data.ChunkTypes.Label
+{
+    #DIM result as CodeSpaghetti.Data.ChunkTypes.Label = ##class(CodeSpaghetti.Data.ChunkTypes.Label).%New()
+    Set result.Content = line
+    Set result.Position = lineNumber
+    Set result.Name = $PIECE($PIECE($PIECE($PIECE(line," "),"("),"["),"{")
+    Set params = $PIECE($PIECE($PIECE(line," "),"(",2),")")
+    If (params '= ""){
+        For i=1:1:$LENGTH(params,",") {
+            Set par=$PIECE(params,",",i)
+            Do result.Parameters.Insert(par)
+        }
+    }
+    Set publicVariables = $PIECE($PIECE($PIECE(line," "),"[",2),"]")
+    If (publicVariables '= ""){
+        For i=1:1:$LENGTH(publicVariables,",") {
+            Set var=$PIECE(publicVariables,",",i)
+            Do result.PublicVariables.Insert(var)
+        }
+    }
+    Return result
+}
+
+/// Parse the start of a Label
+/// Parse a comment
+ClassMethod ParseComment(line As %String, lineNumber As %Integer, parent As CodeSpaghetti.Data.CodeChunk) As CodeSpaghetti.Data.ChunkTypes.Comment
+{
+    Set result = ##class(CodeSpaghetti.Data.ChunkTypes.Comment).%New()
+    // do something
+    Return result
+}
+
 /// Parse all codefiles in the given list
 ClassMethod ParseList(list As %ListOfObjects) As %Status
 {

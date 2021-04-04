@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2020.3 (Build 221U)" ts="2021-04-04 18:44:15">
+<Class name="CodeSpaghetti.Tests.ParserTests">
+<Description>
+A class to test the Parser class</Description>
+<Super>%UnitTest.TestCase</Super>
+<TimeChanged>65838,67373.189985</TimeChanged>
+<TimeCreated>65838,66696.76784</TimeCreated>
+
+<Method name="TestParseLabelPublicBasic">
+<Implementation><![CDATA[
+    Set line = "Begin()[]Public"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
+    Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
+    Do $$$AssertTrue(result.IsPublic,"Label is public")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+]]></Implementation>
+</Method>
+
+<Method name="TestParseLabelPublicBasicSpaced">
+<Implementation><![CDATA[
+    Set line = "Begin() [] Public"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
+    Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
+    Do $$$AssertTrue(result.IsPublic,"Label is public")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+]]></Implementation>
+</Method>
+
+<Method name="TestParseLabelPrivateBasic">
+<Implementation><![CDATA[
+    Set line = "Begin()[]Public"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
+    Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
+    Do $$$AssertNotTrue(result.IsPublic,"Label is private")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+]]></Implementation>
+</Method>
+
+<Method name="TestParseLabelPrivateBasicSpaced">
+<Implementation><![CDATA[
+    Set line = "Begin() [] Public"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
+    Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
+    Do $$$AssertNotTrue(result.IsPublic,"Label is private")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

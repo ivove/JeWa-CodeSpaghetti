@@ -2,7 +2,7 @@ ROUTINE Test1
  //comment1
  ;comment2
 #;comment3
-Begin()[] Public
+Begin() [] Public
 {
     /* some
     multiline
@@ -12,7 +12,23 @@ Begin()[] Public
     Do Begin^Test2("Test1")
 }
 
-next()[]
+next(testPar)[O]
 {
     Write "Next Line",!
 }
+
+Funcky() { Write "Oneliner" }
+
+Oneliner(TestPar)  Write "old-school oneliner"
+Oneliner2   Write "old-school oneliner"
+
+Dots
+    If 1 Do
+    .Write "with dot notation"
+    Quit
+
+NestedLabels
+    Write "some old school functionality: nested labels",!
+Nested
+    Write "this line is in a nested label"
+    Quit
