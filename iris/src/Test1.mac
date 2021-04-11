@@ -18,6 +18,8 @@ next(testPar)[O]
 }
 
 Funcky() { Write "Oneliner" }
+PrivateFuncky() Private { Write "Oneliner" }
+PublicFuncky() Public { Write "Oneliner" }
 
 Oneliner(TestPar)  Write "old-school oneliner"
 Oneliner2   Write "old-school oneliner"

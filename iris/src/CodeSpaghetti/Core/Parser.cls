@@ -35,30 +35,78 @@ ClassMethod ParseLine(line As %String, lineNumber As %Integer) As %ListOfObjects
     Return result
 }
 
-ClassMethod ParseLabel(line As %String, lineNumber As %Integer, parent As CodeSpaghetti.Data.CodeChunk = "") As CodeSpaghetti.Data.ChunkTypes.Label
+/// Parse the start of a Label
+ClassMethod ParseLabel(line As %String, lineNumber As %Integer, ByRef explicitAccess As %Boolean = 0, ByRef labelStarted As %Boolean = 0, ByRef labelEnded As %Boolean = 0, parent As CodeSpaghetti.Data.CodeChunk = "") As CodeSpaghetti.Data.ChunkTypes.Label
 {
     #DIM result as CodeSpaghetti.Data.ChunkTypes.Label = ##class(CodeSpaghetti.Data.ChunkTypes.Label).%New()
     Set result.Content = line
     Set result.Position = lineNumber
     Set result.Name = $PIECE($PIECE($PIECE($PIECE(line," "),"("),"["),"{")
-    Set params = $PIECE($PIECE($PIECE(line," "),"(",2),")")
-    If (params '= ""){
-        For i=1:1:$LENGTH(params,",") {
-            Set par=$PIECE(params,",",i)
-            Do result.Parameters.Insert(par)
+    Set line = ..ParseParameters(line,.result)
+    Set line = ..ParsePublicVariables(line,.result)
+    If line '= "" {
+        If $ZCONVERT(line,"U")?1"PUBLIC".E { 
+            Set result.IsPublic = 1 
+            Set line = $EXTRACT(line,$LENGTH("public"),*)
+            Set explicitAccess = 1
+        }
+        ElseIf $ZCONVERT(line,"U")?1"PRIVATE".E { 
+            Set result.IsPublic = 0 
+            Set line = $EXTRACT(line,$LENGTH("private"),*)
+            Set explicitAccess = 1
         }
     }
-    Set publicVariables = $PIECE($PIECE($PIECE(line," "),"[",2),"]")
-    If (publicVariables '= ""){
-        For i=1:1:$LENGTH(publicVariables,",") {
-            Set var=$PIECE(publicVariables,",",i)
-            Do result.PublicVariables.Insert(var)
-        }
+    If $ZSTRIP(line,"<W")?1"{".E { 
+        Set line = $EXTRACT($ZSTRIP(line,"<W"),2,*) 
+        If 'explicitAccess { 
+            Set result.IsPublic = 0
+            Set explicitAccess = 1
+        }    
+    }
+    If $ZSTRIP(line,"<W")?.E {
+        Set labelStarted = 1    
+        If 'explicitAccess { 
+            Set result.IsPublic = 1
+            Set explicitAccess = 1
+        }      
     }
     Return result
 }
 
-/// Parse the start of a Label
+/// Parse the parameters of a label or a (class)method
+ClassMethod ParseParameters(line As %String, ByRef chunk As CodeSpaghetti.Data.CodeChunk) As %String
+{
+    Set changedLine = $ZSTRIP($EXTRACT(line,$LENGTH(chunk.Name),*),"<W")
+    If $EXTRACT(changedLine,1) = "(" {
+        Set params = $PIECE($PIECE(changedLine,"(",2),")")
+        If params '= "" {
+            For i=1:1:$LENGTH(params,",") {
+                Set par=$PIECE(params,",",i)
+                Do chunk.Parameters.Insert(par)
+            }
+        }
+        Set changedLine=$ZSTRIP($EXTRACT(changedLine,$LENGTH(params)+2,*),"<W")
+    }
+    Return changedLine
+}
+
+/// Parse the public variables for a label or a (class)method
+ClassMethod ParsePublicVariables(line As %String, ByRef chunk As CodeSpaghetti.Data.CodeChunk) As %Status
+{
+    Set changedLine =line
+    If $EXTRACT(changedLine,1) = "[" {
+        Set publicVariables = $PIECE($PIECE(line,"[",2),"]")
+        If (publicVariables '= ""){
+            For i=1:1:$LENGTH(publicVariables,",") {
+                Set var=$PIECE(publicVariables,",",i)
+                Do chunk.PublicVariables.Insert(var)
+            }
+        }
+        Set changedLine=$ZSTRIP($EXTRACT(line,$LENGTH(publicVariables)+2,*),"<W")
+    }
+    Return changedLine
+}
+
 /// Parse a comment
 ClassMethod ParseComment(line As %String, lineNumber As %Integer, parent As CodeSpaghetti.Data.CodeChunk) As CodeSpaghetti.Data.ChunkTypes.Comment
 {

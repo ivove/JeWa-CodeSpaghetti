@@ -24,7 +24,7 @@ Method TestParseLabelPublicBasicSpaced()
 
 Method TestParseLabelPrivateBasic()
 {
-    Set line = "Begin()[]Public"
+    Set line = "Begin()[]Private"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
     Do $$$AssertNotTrue(result.IsPublic,"Label is private")
@@ -34,7 +34,7 @@ Method TestParseLabelPrivateBasic()
 
 Method TestParseLabelPrivateBasicSpaced()
 {
-    Set line = "Begin() [] Public"
+    Set line = "Begin() [] private"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
     Do $$$AssertNotTrue(result.IsPublic,"Label is private")
