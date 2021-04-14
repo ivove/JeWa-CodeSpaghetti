@@ -4,6 +4,7 @@ Class CodeSpaghetti.Tests.ParserTests Extends %UnitTest.TestCase
 
 Method TestParseLabelPublicBasic()
 {
+    Do ..LogMessage("Begin()[]Public")
     Set line = "Begin()[]Public"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
@@ -14,6 +15,7 @@ Method TestParseLabelPublicBasic()
 
 Method TestParseLabelPublicBasicSpaced()
 {
+    Do ..LogMessage("Begin() [] Public")
     Set line = "Begin() [] Public"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
@@ -24,6 +26,7 @@ Method TestParseLabelPublicBasicSpaced()
 
 Method TestParseLabelPrivateBasic()
 {
+    Do ..LogMessage("Begin()[]Private")
     Set line = "Begin()[]Private"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
@@ -34,6 +37,7 @@ Method TestParseLabelPrivateBasic()
 
 Method TestParseLabelPrivateBasicSpaced()
 {
+    Do ..LogMessage("Begin() [] private")
     Set line = "Begin() [] private"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
@@ -44,6 +48,7 @@ Method TestParseLabelPrivateBasicSpaced()
 
 Method TestParseBasicLabel()
 {
+    Do ..LogMessage("Begin() [] Public")
     Set line = "Begin() [] Public"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
     Do $$$AssertTrue(access,"Access is explicitly defined")
@@ -57,6 +62,7 @@ Method TestParseBasicLabel()
 
 Method TestParseWithParamAndPublicVar()
 {
+    Do ..LogMessage("next(testPar)[O]")
     Set line = "next(testPar)[O]"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
     Do $$$AssertNotTrue(access,"Access is not explicitly defined")
@@ -71,6 +77,7 @@ Method TestParseWithParamAndPublicVar()
 
 Method TestParseOneLiner()
 {
+    Do ..LogMessage("Funcky() { Write ""Oneliner"" }")
     Set line = "Funcky() { Write ""Oneliner"" }"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
     Do $$$AssertTrue(access,"Access is not explicitly defined => oneliner")
@@ -83,6 +90,7 @@ Method TestParseOneLiner()
 
 Method TestParsePrivateOneLiner()
 {
+    Do ..LogMessage("Funcky()private { Write ""Oneliner"" }")
     Set line = "Funcky()private { Write ""Oneliner"" }"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
     Do $$$AssertTrue(access,"Access is not explicitly defined => oneliner")
@@ -95,6 +103,7 @@ Method TestParsePrivateOneLiner()
 
 Method TestParsePublicOneLiner()
 {
+    Do ..LogMessage("Funcky()public { Write ""Oneliner"" }")
     Set line = "Funcky()public { Write ""Oneliner"" }"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
     Do $$$AssertTrue(access,"Access is not explicitly defined => oneliner")

@@ -47,12 +47,12 @@ ClassMethod ParseLabel(line As %String, lineNumber As %Integer, ByRef explicitAc
     If line '= "" {
         If $ZCONVERT(line,"U")?1"PUBLIC".E { 
             Set result.IsPublic = 1 
-            Set line = $EXTRACT(line,$LENGTH("public"),*)
+            Set line = $EXTRACT(line,$LENGTH("public")+1,*)
             Set explicitAccess = 1
         }
         ElseIf $ZCONVERT(line,"U")?1"PRIVATE".E { 
             Set result.IsPublic = 0 
-            Set line = $EXTRACT(line,$LENGTH("private"),*)
+            Set line = $EXTRACT(line,$LENGTH("private")+1,*)
             Set explicitAccess = 1
         }
     }
@@ -61,13 +61,13 @@ ClassMethod ParseLabel(line As %String, lineNumber As %Integer, ByRef explicitAc
         If 'explicitAccess { 
             Set result.IsPublic = 0
             Set explicitAccess = 1
-        }    
-    } ElseIf $ZSTRIP(line,"<W")?.E {
-        Set labelStarted = 1    
+        }   
+        Set labelStarted = 1
+    } ElseIf $ZSTRIP(line,"<W")?.E {   
         If 'explicitAccess { 
             Set result.IsPublic = 1
             Set explicitAccess = 1
-        }      
+        }    
     }
     Return result
 }
@@ -75,7 +75,7 @@ ClassMethod ParseLabel(line As %String, lineNumber As %Integer, ByRef explicitAc
 /// Parse the parameters of a label or a (class)method
 ClassMethod ParseParameters(line As %String, ByRef chunk As CodeSpaghetti.Data.CodeChunk) As %String
 {
-    Set changedLine = $ZSTRIP($EXTRACT(line,$LENGTH(chunk.Name),*),"<W")
+    Set changedLine = $ZSTRIP($EXTRACT(line,$LENGTH(chunk.Name)+1,*),"<W")
     If $EXTRACT(changedLine,1) = "(" {
         Set params = $PIECE($PIECE(changedLine,"(",2),")")
         If params '= "" {
@@ -84,7 +84,7 @@ ClassMethod ParseParameters(line As %String, ByRef chunk As CodeSpaghetti.Data.C
                 Do chunk.Parameters.Insert(par)
             }
         }
-        Set changedLine=$ZSTRIP($EXTRACT(changedLine,$LENGTH(params)+2,*),"<W")
+        Set changedLine=$ZSTRIP($EXTRACT(changedLine,$LENGTH(params)+3,*),"<W")
     }
     Return changedLine
 }
@@ -101,7 +101,7 @@ ClassMethod ParsePublicVariables(line As %String, ByRef chunk As CodeSpaghetti.D
                 Do chunk.PublicVariables.Insert(var)
             }
         }
-        Set changedLine=$ZSTRIP($EXTRACT(line,$LENGTH(publicVariables)+2,*),"<W")
+        Set changedLine=$ZSTRIP($EXTRACT(line,$LENGTH(publicVariables)+3,*),"<W")
     }
     Return changedLine
 }
