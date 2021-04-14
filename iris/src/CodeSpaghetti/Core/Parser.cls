@@ -62,8 +62,7 @@ ClassMethod ParseLabel(line As %String, lineNumber As %Integer, ByRef explicitAc
             Set result.IsPublic = 0
             Set explicitAccess = 1
         }    
-    }
-    If $ZSTRIP(line,"<W")?.E {
+    } ElseIf $ZSTRIP(line,"<W")?.E {
         Set labelStarted = 1    
         If 'explicitAccess { 
             Set result.IsPublic = 1

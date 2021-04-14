@@ -1,0 +1,4 @@
+zn "USER"
+Do $system.OBJ.ExportPackage("CodeSpaghetti.Tests","/shared/tests/UnitTests.xml")
+do ##class(%UnitTest.Manager).RunTest()
+h

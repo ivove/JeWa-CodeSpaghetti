@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2020.3 (Build 221U)" ts="2021-04-04 18:44:15">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2020.3 (Build 221U)" ts="2021-04-14 18:43:11">
 <Class name="CodeSpaghetti.Tests.ParserTests">
 <Description>
 A class to test the Parser class</Description>
 <Super>%UnitTest.TestCase</Super>
-<TimeChanged>65838,67373.189985</TimeChanged>
-<TimeCreated>65838,66696.76784</TimeCreated>
+<TimeChanged>65848,66385.277883</TimeChanged>
+<TimeCreated>65848,66385.277883</TimeCreated>
 
 <Method name="TestParseLabelPublicBasic">
 <Implementation><![CDATA[
@@ -14,7 +14,7 @@ A class to test the Parser class</Description>
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
     Do $$$AssertTrue(result.IsPublic,"Label is public")
     Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
-    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public variables")
 ]]></Implementation>
 </Method>
 
@@ -25,29 +25,97 @@ A class to test the Parser class</Description>
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
     Do $$$AssertTrue(result.IsPublic,"Label is public")
     Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
-    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public variables")
 ]]></Implementation>
 </Method>
 
 <Method name="TestParseLabelPrivateBasic">
 <Implementation><![CDATA[
-    Set line = "Begin()[]Public"
+    Set line = "Begin()[]Private"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
     Do $$$AssertNotTrue(result.IsPublic,"Label is private")
     Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
-    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public variables")
 ]]></Implementation>
 </Method>
 
 <Method name="TestParseLabelPrivateBasicSpaced">
 <Implementation><![CDATA[
-    Set line = "Begin() [] Public"
+    Set line = "Begin() [] private"
     Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1)
     Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
     Do $$$AssertNotTrue(result.IsPublic,"Label is private")
     Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
-    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public variables")
+]]></Implementation>
+</Method>
+
+<Method name="TestParseBasicLabel">
+<Implementation><![CDATA[
+    Set line = "Begin() [] Public"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
+    Do $$$AssertTrue(access,"Access is explicitly defined")
+    Do $$$AssertNotTrue(started,"Label is not yet started")
+    Do $$$AssertNotTrue(ended,"Label has not yet ended")
+    Do $$$AssertEquals(result.Name,"Begin","Label name = Begin")
+    Do $$$AssertTrue(result.IsPublic,"Label is public")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"No parameters")
+    Do $$$AssertEquals(result.PublicVariables.Count(),0,"No public variables")
+]]></Implementation>
+</Method>
+
+<Method name="TestParseWithParamAndPublicVar">
+<Implementation><![CDATA[
+    Set line = "next(testPar)[O]"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
+    Do $$$AssertNotTrue(access,"Access is not explicitly defined")
+    Do $$$AssertNotTrue(started,"Label is not yet started")
+    Do $$$AssertNotTrue(ended,"Label has not yet ended")
+    Do $$$AssertEquals(result.Name,"next","Label name = next")
+    Do $$$AssertEquals(result.Parameters.Count(),1,"1 parameter")    
+    Do $$$AssertEquals(result.Parameters.GetAt(1),"testPar","parameter = testPar")
+    Do $$$AssertEquals(result.PublicVariables.Count(),1,"1 public variable")
+    Do $$$AssertEquals(result.PublicVariables.GetAt(1),"O","O = public variable")
+]]></Implementation>
+</Method>
+
+<Method name="TestParseOneLiner">
+<Implementation><![CDATA[
+    Set line = "Funcky() { Write ""Oneliner"" }"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
+    Do $$$AssertTrue(access,"Access is not explicitly defined => oneliner")
+    Do $$$AssertNotTrue(result.IsPublic,"Label is private => oneliner without acces-modifier")
+    Do $$$AssertTrue(started,"Label is started => oneliner")
+    Do $$$AssertTrue(ended,"Label has ended => oneliner")
+    Do $$$AssertEquals(result.Name,"Funky","Label name = Funky")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"0 parameters")
+]]></Implementation>
+</Method>
+
+<Method name="TestParsePrivateOneLiner">
+<Implementation><![CDATA[
+    Set line = "Funcky()private { Write ""Oneliner"" }"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
+    Do $$$AssertTrue(access,"Access is not explicitly defined => oneliner")
+    Do $$$AssertNotTrue(result.IsPublic,"Label is private")
+    Do $$$AssertTrue(started,"Label is started => oneliner")
+    Do $$$AssertTrue(ended,"Label has ended => oneliner")
+    Do $$$AssertEquals(result.Name,"Funky","Label name = Funky")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"0 parameters")
+]]></Implementation>
+</Method>
+
+<Method name="TestParsePublicOneLiner">
+<Implementation><![CDATA[
+    Set line = "Funcky()public { Write ""Oneliner"" }"
+    Set result = ##class(CodeSpaghetti.Core.Parser).ParseLabel(line,1,.access,.started,.ended)
+    Do $$$AssertTrue(access,"Access is not explicitly defined => oneliner")
+    Do $$$AssertTrue(result.IsPublic,"Label is public")
+    Do $$$AssertTrue(started,"Label is started => oneliner")
+    Do $$$AssertTrue(ended,"Label has ended => oneliner")
+    Do $$$AssertEquals(result.Name,"Funky","Label name = Funky")
+    Do $$$AssertEquals(result.Parameters.Count(),0,"0 parameters")
 ]]></Implementation>
 </Method>
 </Class>

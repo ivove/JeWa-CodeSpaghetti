@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "private": false,
     "scripts": {
-        "iris-compile": "docker exec -i jewa iris session IRIS < iris-compile-src.script"
+        "iris-compile": "docker exec -i jewa iris session IRIS < iris-compile-src.script",
+        "iris-run-tests": "docker exec -i jewa iris session IRIS < iris-test.script"
     }
 }
